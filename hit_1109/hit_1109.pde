@@ -117,7 +117,7 @@ boolean isBallTouch(){
   
   distX = Cx-x;
   distY = C1y-500;
-  distRadius = 80;
+  distRadius = 70;
   dist = sqrt( sq(distX)+sq(distY) );
   
   

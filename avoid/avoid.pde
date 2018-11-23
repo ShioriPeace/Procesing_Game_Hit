@@ -13,12 +13,23 @@ boolean running = false;
 int tm0;
 int tm;
 
+//hit
+float C1y,avoidX;
+boolean C1,Hit;
+
+float Cx = 200;
+
 void setup() {
   size(500,600);
   frameRate(100);
 
   oscP5 = new OscP5(this,12001);
   remoteAddoress = new NetAddress("127.0.0.1",12002);
+  
+  x = mouseX;
+  y = mouseY;
+  C1 = false;
+  Hit = false;
 }
 
 void draw() {
@@ -53,6 +64,49 @@ void draw() {
   OscMessage msg = new OscMessage("/mouse/position");
   msg.add(x);
   oscP5.send(msg,remoteAddoress);
+  
+  //hit
+  background(120);
+  
+  ellipse(Cx,C1y,50,50);//落ちてくる円の大きさ変更
+  
+  if( C1 ){
+    
+  C1y += 5;
+  C1y = C1y % height;
+  }else{
+    C1y = 5;
+  }
+  
+  if(C1 == true && C1y > 590){
+    C1 = false;
+  }
+  
+  if(isBallTouch()){
+    text("1P WIN!!!",width/2,height/2);
+    noLoop();
+    
+  }
+  
+}
+
+//hit 当たり判定
+boolean isBallTouch(){
+  float distX;
+  float distY;
+  float distRadius;
+  float dist;
+  
+  distX = Cx-x;
+  distY = C1y-500;
+  distRadius = 70;
+  dist = sqrt( sq(distX)+sq(distY) );
+  
+  
+  println(dist);
+  
+  return(dist < distRadius);
+  
 }
 
 
