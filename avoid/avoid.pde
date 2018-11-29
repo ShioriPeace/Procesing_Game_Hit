@@ -14,10 +14,10 @@ int tm0;
 int tm;
 
 //hit
-float C1y,avoidX;
+float C1y,avoidX,HitX,HitY;
 boolean C1,Hit;
 
-float Cx = 200;
+float Cx = HitX;
 
 void setup() {
   size(500,600);
@@ -86,7 +86,7 @@ void draw() {
     text("1P WIN!!!",width/2,height/2);
     noLoop();
     
-  }
+  }*/
   
 }
 
@@ -103,7 +103,7 @@ boolean isBallTouch(){
   dist = sqrt( sq(distX)+sq(distY) );
   
   
-  println(dist);
+  //println(dist);
   
   return(dist < distRadius);
   

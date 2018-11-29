@@ -7,6 +7,8 @@ NetAddress remoteAddoress;
 int x,y;
 int drawflg;
 int mouseLocx,mouseLocy;
+PImage Dorobou,Police;
+
 
 int TM = 10; //タイマーの時間
 boolean running = false; 
@@ -21,9 +23,13 @@ float Cx = width/2;
 void setup() {
   size(500,600);
   frameRate(100);
+  
+  Dorobou = loadImage("dorobou_shinobiashi.png");
+  Police = loadImage("police_man_kenju_gun.png");
 
   oscP5 = new OscP5(this,12001);
   remoteAddoress = new NetAddress("127.0.0.1",12002);
+  //remoteAddoress = new NetAddress("192.168.0.15",12002);
 }
 
 void draw() {
@@ -38,18 +44,19 @@ void draw() {
   stroke(0);
   strokeWeight(1); 
 
-  ellipse(Cx,C1y,50,50);//落ちてくる円の大きさ変更
+  image(Police,Cx, C1y, 100, 100);//落ちてくる円の大きさ変更
   fill(0);
   
   //avoidの操作
   noStroke();
   fill(220,100,100);
-  ellipse(x,500,30,30);
+  //ellipse(x,500,30,30);
+  image(Dorobou,x,500,100,100);
   
   if (running) {
     tm = TM*1000 - (millis() - tm0);
     x = mouseX;
-    
+   // doroX += dir_doroX * doro_speed;
     if(tm <= 0){
       tm = 0;
       running = false; //タイマー停止
@@ -73,6 +80,15 @@ void draw() {
   oscP5.send(msg,remoteAddoress);
 }
 
+void HitTrue(){
+  text("1P WIN!!!", width/2, height/2);
+  noLoop();
+}
+
+void startPoint() {
+  running = false;
+  loop();
+}
 
 void mousePressed(){
   running = true;
@@ -84,9 +100,28 @@ void mousePressed(){
   oscP5.send(msg,remoteAddoress);
 }
 
+void keyPressed(){
+  if(key == ' '){
+    startPoint();
+    OscMessage Startmsg = new OscMessage("/Key/Space/Pressed");
+    Startmsg.add(1);
+    oscP5.send(Startmsg,remoteAddoress);
+  }
+  
+  
+}
+
 void oscEvent(OscMessage msg) {
   if(msg.checkAddrPattern("/en/position")==true) {
     Cx = msg.get(0).floatValue();
     C1y = msg.get(1).floatValue();
+  }
+  
+  if(msg.checkAddrPattern("/Hit/True")==true){
+    HitTrue();
+  }
+  
+  if(msg.checkAddrPattern("/Key/Space/Pressed")==true){
+    startPoint();
   }
 }

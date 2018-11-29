@@ -63,6 +63,11 @@ void draw() {
     
   }
   
+  OscMessage Hitmsg = new OscMessage("/Key/Pressed");
+  Hitmsg.add(Cx);
+  Hitmsg.add(C1y);
+  oscP5.send(Hitmsg,remoteAddoress);
+  
  /* println(C1Avoid);//1Pと2Pの距離判定
   if(C1Avoid < 235){//当たり判定（正確に判定できてない）
     Hit = true;
@@ -106,8 +111,10 @@ void draw() {
   OscMessage sendValue = new OscMessage("/mouse/position");
   sendValue.add(mouseX);
   sendValue.add(mouseY);
+  
   oscP5.send(sendValue,remoteAddoress);
 }
+  
 
 boolean isBallTouch(){
   float distX;
@@ -144,6 +151,12 @@ void keyPressed(){
       C1 = false;
     }
   }
+  
+  OscMessage sendHitValue = new OscMessage("/Key/Pressed");
+  sendHitValue.add(1);
+  //OSCメッセ送信
+  oscP5.send(sendHitValue,remoteAddoress);
+  
 }
 
 
@@ -151,7 +164,7 @@ void keyPressed(){
 /* incoming osc message are forwarded to the oscEvent method. */
 void oscEvent(OscMessage msg) {
   if(msg.checkAddrPattern("/Android")==true) {
-    mouseLocx = msg.get(0).intValue();
+    mouseLocx = msg.get(0).intValue(); //avoid のx座標
   }
   
     if(msg.checkAddrPattern("/mouse/cliked")==true) {
